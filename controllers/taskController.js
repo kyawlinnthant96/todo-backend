@@ -1,6 +1,7 @@
 const catchAsync = require('../utils/catchAsync');
 const Task = require('./../models/taskModel');
 const ApiFeatures = require("../utils/apiFeatures")
+const AppError = require("../utils/appError")
 
 exports.getAllTasks = catchAsync(async (req, res) => {
     const features = new ApiFeatures(Task.find(),req.query).filter().limitFields().paginate();
@@ -33,16 +34,30 @@ exports.createTask = catchAsync(async (req, res) => {
     })
 })
 
-exports.updateTask = catchAsync(async (req, res) => {
+exports.updateTask = catchAsync(async (req, res,next) => {
+
+    const task = await Task.findByIdAndUpdate(req.params.id, req.body,{
+        new: true,
+        runValidators: true
+    })
+
+    if (!task) {
+        return next(new AppError("No task found with that Id", 404))
+    }
     res.status(200).json({
         status: 'success',
         data: {
-            task: "task"
+            task
         }
     })
 })
 
-exports.deleteTask = catchAsync(async (req, res) => {
+exports.deleteTask = catchAsync(async (req, res,next) => {
+    const tour = await Task.findByIdAndDelete(req.params.id);
+
+    if (!tour) {
+        return next(new AppError("No Task found with that id",404))
+    }
     res.status(204).json({
         status: 'success',
         data: null
