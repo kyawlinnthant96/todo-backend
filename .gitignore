@@ -1,0 +1,6 @@
+
+# compile output
+/node_modules
+
+# enviroment variable
+/.env
