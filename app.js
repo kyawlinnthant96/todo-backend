@@ -2,16 +2,20 @@ const express = require('express');
 const morgan = require('morgan');
 const taskRoutes = require('./routes/taskRoute');
 const userRouter = require("./routes/userRoute");
+const cors = require('cors');
 const globalErrorHandler = require("./controllers/errorController")
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 if (process.env.NODE_ENV === "development") {
   app.use(morgan('dev'));
 }
+
 app.use("/api/v1/tasks", taskRoutes);
 app.use('/api/v1/users', userRouter);
 app.use(globalErrorHandler);
+
 
 module.exports = app;
