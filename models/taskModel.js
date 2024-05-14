@@ -6,7 +6,7 @@ const taskSchema = new mongoose.Schema({
     status: {
         type: String,
         enum: ["open", "in_progress", "done"],
-        default: "open",
+        default: "open"
     },
     createdAt: {
         type: Date,

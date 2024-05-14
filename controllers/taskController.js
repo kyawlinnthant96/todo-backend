@@ -4,11 +4,12 @@ const ApiFeatures = require("../utils/apiFeatures")
 const AppError = require("../utils/appError")
 
 exports.getAllTasks = catchAsync(async (req, res) => {
+    const totalTasks = await Task.find({userId: req.user._id})
     const features = new ApiFeatures(Task.find({userId: req.user._id}), req.query).filter().limitFields().paginate();
     const tasks = await features.query;
     res.status(200).json({
         status: 'success',
-        results: tasks.length,
+        results: totalTasks.length,
         data: {
             tasks
         }
@@ -33,7 +34,7 @@ exports.createTask = catchAsync(async (req, res) => {
     const newTask = await Task.create({
         title: req.body.title,
         description: req.body.description,
-        status: req.status,
+        status: req.body.status,
         userId: req.user._id
     });
     res.status(201).json({
